@@ -39,10 +39,6 @@ let exceptionMapToFuncs exMap =
         | Some(k, v)    -> v ex
         | None          -> raise ex)
 
-let contingent0 exMap f =
-    let stopF, errF = exceptionMapToFuncs exMap
-    contingentGen stopF errF f
-
 let contingent1 exMap f x =
     let stopF, errF = exceptionMapToFuncs exMap
     contingentGen stopF errF (fun _ -> f x)
@@ -55,15 +51,6 @@ let contingent3 exMap f x y z =
     let stopF, errF = exceptionMapToFuncs exMap
     contingentGen stopF errF (fun _ -> f x y z)
 
-let neverThrow0 exc f       = contingentGen (fun _ -> true) (fun ex -> exc ex) f
 let neverThrow1 exc f x     = contingentGen (fun _ -> true) (fun ex -> exc ex) (fun _ -> f x)
 let neverThrow2 exc f x y   = contingentGen (fun _ -> true) (fun ex -> exc ex) (fun _ -> f x y)
 let neverThrow3 exc f x y z = contingentGen (fun _ -> true) (fun ex -> exc ex) (fun _ -> f x y z)
-
-let alwaysThrow exc f x =
-    match f x with
-    | Success(ret)              -> ret
-    | Failure(e)                -> raise (exc e)
-        
-
- 
